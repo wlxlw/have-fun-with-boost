@@ -51,8 +51,10 @@
       ...code..//如果定义了x这个宏，编译器会编译code，否则直接忽略code
    ```
 
+6. 使用模板时，占位符typename class有区别吗？  
+   没有区别
 # TODO
-1. - [ ] 模板实现原理，编译相关
+1. - [ ] 阅读C++ template前两章(模板实现原理，编译相关，隐式接口与多态) 
 2. - [x] 魔改Array，实现类似python访问倒数第N个元素的功能(a[N], a.size()<=N<0)  
    code-> array/code/array_with_reverse_access.cc
 
