@@ -1,6 +1,9 @@
 # 从boost/array.hpp开始学习C++
    array.hpp文件位置 boost_1_77_0/boost/array.hpp
 # 问题
+0. [如何使用boost编程](https://www.boost.org/doc/libs/1_78_0/more/getting_started/unix-variants.html)  
+   1. 首先`#include<boost/whatever.hpp>`
+   2. `g++ -I path/to/boost_1_77_0 example.cpp -o example`
 1. 什么是hpp文件？
     hpp文件时.h文件和.cpp文件的结合体，即定义以及实现都在同一个文件中完成。
 
@@ -14,9 +17,8 @@
       3. 不可使用静态成员
    
 2. 什么是模板，为什么要用模板？
-   很多时候，函数与类的**实现**与对**传入参数的类型**没有严格的限制。
-
-   为了实现代码的重用，可以对函数与类处理的参数类型**进一步的抽象**，使用占位符对参数类型进行定义，参数具体的类型等模板函数(类)编译时传入的参数确定。
+   
+   很多时候，函数与类的**实现**与对**传入参数的类型**没有严格的限制。为了实现代码的重用，可以对函数与类处理的参数类型**进一步的抽象**，使用占位符对参数类型进行定义，参数具体的类型由模板函数(类)编译时传入的参数确定。
 
 3. [typedef](https://www.runoob.com/cprogramming/c-typedef.html)
    1. 定义类型别名,贴几个例子
@@ -26,7 +28,7 @@
       typedef const T*       const_iterator;
       typedef T&             reference;
    ```
-   2. 作用域与变量的作用域等同
+   1. 作用域与变量的作用域等同
 
 4. [BOOST_ASSERT_MSG](https://www.boost.org/doc/libs/1_77_0/libs/assert/doc/html/assert.html#boost_assert_msg) && assert
    1. 访问Array中元素的代码
@@ -36,12 +38,21 @@
             return BOOST_ASSERT_MSG( i < N, "out of range" ), elems[i]; 
         }
       ```
-      [`return a,b,c`](https://stackoverflow.com/questions/38943900/what-does-return-a-b-do-and-why)相当于执行`a,b,c`再返`c`
-   1. BOOST_ASSERT_MSG相当于assert((expr)&&(msg))，如果expr为0则中断程序，并输出错误信息
+      [`return a,b,c`](https://stackoverflow.com/questions/38943900/what-does-return-a-b-do-and-why)相当于执行`a,b,c`再返回`c`
+   2. BOOST_ASSERT_MSG相当于assert((expr)&&(msg))，如果expr为0则中断程序，并输出错误信息
 
   
-   2. assert(头文件assert.h)广泛用于调试程序，调试结束后可以通过 `#define NDEBUG` 禁止assert的调用 
+   3. assert(头文件assert.h)广泛用于调试程序，调试结束后可以通过 `#define NDEBUG` 禁止assert的调用 
+
+5. [条件编译中的判断语句`#if #if !defined #if #elif #else`](https://blog.csdn.net/freeWayWalker/article/details/50035923)  
+   条件编译时C语言中预处理部分的内容，是编译器编译代码时最优先处理的部分，如果宏条件符合，编译器就编译这段代码，否则编译器就忽略这段代码，**不进行编译**。  
+   ```c++
+   #if defined(x)
+      ...code..//如果定义了x这个宏，编译器会编译code，否则直接忽略code
+   ```
 
 # TODO
-1. 模板实现原理，编译相关
+1. - [ ] 模板实现原理，编译相关
+2. - [x] 魔改Array，实现类似python访问倒数第N个元素的功能(a[N], a.size()<=N<0)  
+   code-> array/code/array_with_reverse_access.cc
 
