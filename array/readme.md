@@ -54,7 +54,21 @@
 6. 使用模板时，占位符typename class有区别吗？  
    没有区别
 # TODO
-1. - [ ] 阅读C++ template前两章(模板实现原理，编译相关，隐式接口与多态) 
+1. - [x] 阅读C++ template前两章(模板实现原理，编译相关，隐式接口与多态)
+   1. - [ ] 类型萃取(type trait)
+   2. - [ ] 作为返回类型的模板参数(chapter 1.3.1)
+   3. - [x] 模板重载的优先级 *code->* array/code/template_overload.cc  
+      **模板重载时，要确保对任意一个调用，都只会有一个模板匹配**
+      1. 优先匹配非模板函数
+      2. 如果模板可以实例出更匹配的函数，优先选择此模板函数
+      3. 模板参数推断时不允许自动类型转换，而常规函数是允许的
+      4. 确保在调用某个函数模板之前，编译器已经看到了相对应的模板定义
+
+   4. - [x] 基于vector实现模板类my_stack
+      1. - [x] [`const T&` 与 `T const&`的区别](https://stackoverflow.com/questions/2640446/why-do-some-people-prefer-t-const-over-const-t) 答: 没有区别,都表示对T的常量引用
+      2. - [x] *code1->* array/code/my_stack.hpp  *code2->* array/code/my_stack.cc
+      3. - [x] 增加对my_stack进行特例化的代码
+   
 2. - [x] 魔改Array，实现类似python访问倒数第N个元素的功能(a[N], a.size()<=N<0)  
-   code-> array/code/array_with_reverse_access.cc
+   *code->* array/code/array_with_reverse_access.cc
 
