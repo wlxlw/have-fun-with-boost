@@ -55,7 +55,7 @@
    没有区别
 # TODO
 1. - [x] 阅读C++ template前两章(模板实现原理，编译相关，隐式接口与多态)
-   1. - [ ] 类型萃取(type trait)
+   1. - [x] 类型萃取(type trait)
    2. - [ ] 作为返回类型的模板参数(chapter 1.3.1)
    3. - [x] 模板重载的优先级 *code->* array/code/template_overload.cc  
       **模板重载时，要确保对任意一个调用，都只会有一个模板匹配**
@@ -72,5 +72,58 @@
 2. - [x] 魔改Array，实现类似python访问倒数第N个元素的功能(a[N], a.size()<=N<0)  
    *code->* array/code/array_with_reverse_access.cc
 
-3. - [ ] 阅读《STL源码剖析》第三章迭代器部分
+3. - [x] 阅读《STL源码剖析》第三章迭代器部分，结合array.hpp，[typename的前世今生](https://feihu.me/blog/2014/the-origin-and-usage-of-typename/#typename%E7%9A%84%E5%B8%B8%E8%A7%81%E7%94%A8%E6%B3%95)
+   1. `typename T::is_type` typename关键字用来标记is_type是一个类型，用于解决**is_tpye是一个依赖于模板参数T的名称时，可能产生的错误，例如T是一个class，is_type是其中一个静态成员变量** 
+
+   2. 迭代器的设计意义：是容器与算法之间进行沟通的桥梁
+   
+   3. 源码分析&类型萃取  
+      类型萃取的模板类实现的功能:接收一个模板参数，提取这个模板参数对应的associated types，对于迭代器，associated type包括value_type, difference_type, pointer, reference, iterator_category。**从而将模板参数中的重要类型传递给其他模板**。   
+      在boost/attay.hpp中，reverse_iterator是模板类reverse_iterator的别名
+      ```c++
+      typedef std::reverse_iterator<iterator> reverse_iterator;//将模板参数iterator传递给反向迭代器
+      typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
+      ```  
+      查找模板类reverse_iterator -> /user/include/c++/9/bits/stl_iterator.h  
+      ```c++
+      template<typename _Iterator>
+      class reverse_iterator
+      :...//此处省略继承的代码
+      {  protected:
+            _Iterator current;
+            typedef iterator_traits<_Iterator>		__traits_type;
+
+         public://利于萃取模板萃取_Iterator中的重要参数名称
+            typedef _Iterator					iterator_type;
+            typedef typename __traits_type::difference_type	difference_type;
+            typedef typename __traits_type::pointer		pointer;
+            typedef typename __traits_type::reference		reference;
+         ...//省略
+      }
+      ```
+      查找模板类iterator_traits-> /user/include/c++/9/bits/stl_iterator_base_type.h  
+      ```c++
+         template<typename _Iterator, typename = __void_t<>>
+            struct __iterator_traits { };
+
+         template<typename _Iterator>
+            struct __iterator_traits<_Iterator,
+                     __void_t<typename _Iterator::iterator_category,
+                           typename _Iterator::value_type,
+                           typename _Iterator::difference_type,
+                           typename _Iterator::pointer,
+                           typename _Iterator::reference>>
+            {//萃取模板参数_Iterator中的5个类型名称
+               typedef typename _Iterator::iterator_category iterator_category;
+               typedef typename _Iterator::value_type        value_type;
+               typedef typename _Iterator::difference_type   difference_type;
+               typedef typename _Iterator::pointer           pointer;
+               typedef typename _Iterator::reference         reference;
+            };
+
+         template<typename _Iterator>
+            struct iterator_traits
+            : public __iterator_traits<_Iterator> { };
+      ```
+      
 
