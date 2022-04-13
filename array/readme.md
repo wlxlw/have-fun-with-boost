@@ -72,3 +72,5 @@
 2. - [x] 魔改Array，实现类似python访问倒数第N个元素的功能(a[N], a.size()<=N<0)  
    *code->* array/code/array_with_reverse_access.cc
 
+3. - [ ] 阅读《STL源码剖析》第三章迭代器部分
+
