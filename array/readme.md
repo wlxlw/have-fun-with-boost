@@ -77,32 +77,34 @@
 
    2. 迭代器的设计意义：是容器与算法之间进行沟通的桥梁
    
-   3. 源码分析&类型萃取  
-      类型萃取的模板类实现的功能:接收一个模板参数，提取这个模板参数对应的associated types，对于迭代器，associated type包括value_type, difference_type, pointer, reference, iterator_category。**从而将模板参数中的重要类型传递给其他模板**。   
-      在boost/attay.hpp中，reverse_iterator是模板类reverse_iterator的别名
-      ```c++
-      typedef std::reverse_iterator<iterator> reverse_iterator;//将模板参数iterator传递给反向迭代器
-      typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
-      ```  
-      查找模板类reverse_iterator -> /user/include/c++/9/bits/stl_iterator.h  
-      ```c++
-      template<typename _Iterator>
-      class reverse_iterator
-      :...//此处省略继承的代码
-      {  protected:
-            _Iterator current;
-            typedef iterator_traits<_Iterator>		__traits_type;
+   3. 源码分析&类型萃取
+      1. 简介  
+         类型萃取的模板类实现的功能:**接收一个模板参数，提取这个模板参数对应的associated types**，对于迭代器，associated type包括value_type, difference_type, pointer, reference, iterator_category。**从而将模板参数对应的重要类型传递给其他模板**。  
+      2. 源码分析  
+         在boost/attay.hpp中，reverse_iterator是模板类reverse_iterator的别名
+         ```c++
+         typedef std::reverse_iterator<iterator> reverse_iterator;//将模板参数iterator传递给反向迭代器
+         typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
+         ```  
+         查找模板类reverse_iterator -> /user/include/c++/9/bits/stl_iterator.h  
+         ```c++
+         template<typename _Iterator>
+         class reverse_iterator
+         :...//此处省略继承的代码
+         {  protected:
+               _Iterator current;
+               typedef iterator_traits<_Iterator>		__traits_type;
 
-         public://利于萃取模板萃取_Iterator中的重要参数名称
-            typedef _Iterator					iterator_type;
-            typedef typename __traits_type::difference_type	difference_type;
-            typedef typename __traits_type::pointer		pointer;
-            typedef typename __traits_type::reference		reference;
-         ...//省略
-      }
-      ```
-      查找模板类iterator_traits-> /user/include/c++/9/bits/stl_iterator_base_type.h  
-      ```c++
+            public://使用萃取模板萃取_Iterator中的重要参数名称
+               typedef _Iterator					iterator_type;
+               typedef typename __traits_type::difference_type	difference_type;
+               typedef typename __traits_type::pointer		pointer;
+               typedef typename __traits_type::reference		reference;
+            ...//省略
+         }
+         ```
+         查找模板类iterator_traits-> /user/include/c++/9/bits/stl_iterator_base_type.h  
+         ```c++
          template<typename _Iterator, typename = __void_t<>>
             struct __iterator_traits { };
 
@@ -124,6 +126,14 @@
          template<typename _Iterator>
             struct iterator_traits
             : public __iterator_traits<_Iterator> { };
-      ```
-      
+         ```
+      3. 萃取 例子讲解(结合STL源码剖析第三章,与boost的advance.hpp)  
+         产生原因：重载函数接收的参数不能都是模板参数（因为此时编译器无法根据传入的参数推断调用哪个函数）  
+         解决方法：为此通过萃取提取模板参数对应的参数类型(模板参数对应的类中需要事先定义一个确定的类型)
+         1. 重载函数接收的参数不能都是模板参数  
+            *code->* array/code/traits/1_why_need_traits.cc
+         2. 模板参数对应的类中事先定义一个确定的类型  
+            *code->* array/code/traits/2_help_compiler_distinguish_function.cc
+         3. 使用萃取简化代码，提取2中定义的类型  
+            *code->* array/code/traits/3_simplify_code_iterator_traits.cc
 
