@@ -12,3 +12,7 @@
          2. 针对双向迭代器和随机访问迭代器，实现advance函数(包含萃取)  
             *code->* array/code/traits
    2. - [ ] Unordered -> unordered_map
+   3. - [ ] move函数
+      1. - [ ] 左值与右值
+      2. - [ ] 模板实参推断
+      3. - [ ] move源码分析 
