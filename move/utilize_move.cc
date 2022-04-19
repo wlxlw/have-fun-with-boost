@@ -16,11 +16,7 @@ int main(){
     std::string move_str(move_str_rvalue_reference);//此行执行完成后，move_str_rvalue_reference引用的资源移动到move_str,只有move_str能控制该资源
     move_str_rvalue_reference = "i can NOT modify resource";
     printf("%p move_str\n",&move_str);
-
     printf("%p str address\n",&str);
-
-    std::string s3 = boost::move(std::string("tmp"));
     std::cout<<move_str<<std::endl;
     
-    std::string tmp("123");
 }
